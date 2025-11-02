@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: web-red
-        image: facuaavila5/imagen-red:v1 # <--- Imagen con fondo rojo
+        image: thiaguiniob/imagen-red:v1 # <--- Imagen con fondo rojo
         ports:
         - containerPort: 80
