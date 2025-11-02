@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicio-estable
+spec:
+  selector:
+    app: web
+    version: estable # <--- Apunta solo a los Pods estables
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

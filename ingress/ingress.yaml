@@ -1,0 +1,49 @@
+# ---------------------------------
+# 1. INGRESS ESTABLE (TRÁFICO PRINCIPAL)
+# ---------------------------------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-ingress-estable
+  annotations:
+    # Esta anotación la necesitan ambos
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: tu-dominio.com # Asegúrate que esté en tu /etc/hosts
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: servicio-estable # Apunta al servicio estable
+            port:
+              number: 80
+---
+# ---------------------------------
+# 2. INGRESS CANARY (TRÁFICO DE PRUEBA)
+# ---------------------------------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-ingress-canary
+  annotations:
+    # Esta anotación la necesitan ambos
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    
+    # Anotaciones mágicas del canary
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "10" # 10% del tráfico
+spec:
+  rules:
+  - host: tu-dominio.com # Debe ser el MISMO host que el estable
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: servicio-canary # Apunta al servicio canary
+            port:
+              number: 80

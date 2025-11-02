@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-estable
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+      version: estable
+  template:
+    metadata:
+      labels:
+        app: web
+        version: estable
+    spec:
+      containers:
+      - name: web-pink
+        image: app:canary # <--- Imagen con fondo rojo
+        ports:
+        - containerPort: 80
