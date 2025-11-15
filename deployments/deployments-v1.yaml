@@ -15,7 +15,8 @@ spec:
         version: estable
     spec:
       containers:
-      - name: web-red
-        image: app-estable # <--- Imagen con fondo rojo
-        ports:
-        - containerPort: 80
+        - name: web-red
+          image: demo:v1   # Imagen que ya existe localmente
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 80
