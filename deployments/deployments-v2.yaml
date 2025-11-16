@@ -1,18 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-estable
+  name: web-canary
+  labels:
+    app: web
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: web
-      version: estable
+      version: canary
   template:
     metadata:
       labels:
         app: web
-        version: estable
+        version: canary
     spec:
       containers:
       - name: web-pink
