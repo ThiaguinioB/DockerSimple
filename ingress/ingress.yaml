@@ -1,3 +1,6 @@
+# Distribución de tráfico mediante estrategia Canary
+# El tráfico se divide automáticamente: (100 - canary-weight)% estable, canary-weight% canary
+
 # ---------------------------------
 # 1. INGRESS ESTABLE (TRÁFICO PRINCIPAL)
 # ---------------------------------
@@ -6,11 +9,10 @@ kind: Ingress
 metadata:
   name: web-ingress-estable
   annotations:
-    # Esta anotación la necesitan ambos
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: tu-dominio.com # Asegúrate que esté en tu /etc/hosts
+  - host: tu-dominio.com # Configurar en /etc/hosts apuntando a la IP del Ingress Controller
     http:
       paths:
       - path: /
@@ -29,21 +31,24 @@ kind: Ingress
 metadata:
   name: web-ingress-canary
   annotations:
-    # Esta anotación la necesitan ambos
     nginx.ingress.kubernetes.io/rewrite-target: /
     
-    # Anotaciones mágicas del canary
-    nginx.ingress.kubernetes.io/canary: "true"
-    nginx.ingress.kubernetes.io/canary-weight: "10" # 10% del tráfico
+    # Configuración Canary
+    nginx.ingress.kubernetes.io/canary: "true"       # Activa modo Canary
+    nginx.ingress.kubernetes.io/canary-weight: "10"  # Porcentaje de tráfico dirigido al canary
 spec:
   rules:
-  - host: tu-dominio.com # Debe ser el MISMO host que el estable
+  - host: tu-dominio.com # Debe ser el mismo host que el Ingress estable
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: servicio-canary # Apunta al servicio canary
+            name: servicio-canary
             port:
               number: 80
+
+# Gestión del Canary:
+# Aumentar peso:   kubectl patch ingress web-ingress-canary -p '{"metadata":{"annotations":{"nginx.ingress.kubernetes.io/canary-weight":"50"}}}'
+# Rollback rápido: kubectl delete ingress web-ingress-canary
