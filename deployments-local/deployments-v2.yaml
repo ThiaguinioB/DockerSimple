@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: web-pink
-        image: thiaguiniob/imagen-pink:v2 # <--- Imagen con fondo rojo
+        image: thiaguiniob/imagen-pink:v2 # <--- Imagen con fondo rosa
         ports:
         - containerPort: 80
